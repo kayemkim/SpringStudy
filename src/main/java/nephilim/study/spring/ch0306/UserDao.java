@@ -1,13 +1,14 @@
 package nephilim.study.spring.ch0306;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 public class UserDao {
+	
 	public void setDataSource(DataSource dataSource) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
@@ -24,9 +25,10 @@ public class UserDao {
 		}
 	};
 	
+	/*
 	public List<User> getAll() {
 		// 
 		return null;
 	}
-	}
+	*/
 }
