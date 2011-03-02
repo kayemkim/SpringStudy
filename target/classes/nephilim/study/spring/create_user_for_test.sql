@@ -26,3 +26,14 @@ create table users
 	name 		varchar2(100),
 	password 	varchar2(100)
 )
+
+alter table users
+	add (
+		user_level number(1) not null,
+		login	   number(10) not null,
+		recommended number(10) not null
+	);
+
+
+
+	
