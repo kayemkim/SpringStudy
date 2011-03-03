@@ -3,20 +3,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="testDataSource" />
+	<bean id="txAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager"  ref="txManager"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGTION_REQUIRED, readOnly, timeout_30</prop>
+				<prop key="upgrade*">PROPAGTION_REQUIRED, readOnly, timeout_30</prop>
+				<prop key="*">PROPAGTION_REQUIRED</prop>
+			</props>
+		</property>
 	</bean>
 
-	<bean id="userServiceTx" class="nephilim.study.spring.ch06.UserServiceTx">
-		<property name="transasctionManager" ref="transactionManager"/>		
-		<property name="userService" ref="userServiceImpl"/>
-	</bean>
-
-	<bean id="userServiceImpl" class="nephilim.study.spring.ch06.UserServiceImpl">
-		<property name="userDao" ref="userDao" />
-	</bean>
-
-	<bean id="userDao" class="nephilim.study.spring.ch06.UserDao">
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="testDataSource"/>
 	</bean>
 	
@@ -26,5 +24,4 @@
 		<property name="username" value ="test"/>
 		<property name="password" value="test"/>
 	</bean>
-
 </beans>

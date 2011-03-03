@@ -3,7 +3,6 @@ package nephilim.study.spring.ch06;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:nephilim/study/spring/ch06/applicationContext.xml")
-public class UserServiceTest {
+public class UserServiceTxHandlerTest {
 	
 	@Autowired
 	UserServiceImpl userService;
@@ -44,28 +43,7 @@ public class UserServiceTest {
 	public void beanInjection() {
 		assertNotNull(userService);
 	}
-	
-	@Test
-	public void upgradeLevels() throws Exception{
-		userDao.deleteAll();
-		for(User user:users) userDao.add(user);
 		
-		userService.upgradeLevels();
-		
-		checkLevel(users.get(0), Level.SILVER);
-		checkLevel(users.get(1), Level.BASIC);
-		checkLevel(users.get(2), Level.GOLD);
-		
-	}
-	
-	
-	
-
-	private void checkLevel(User user, Level expectedLevel) {
-		User userUpdate = userDao.get(user.getId());
-		assertEquals("", userUpdate.getLevel(), expectedLevel);
-	}
-	
 	@Test
 	public void upgradeAllOrNothing() throws Exception {
 		
@@ -91,16 +69,11 @@ public class UserServiceTest {
 		assertEquals(levelsBefore.get(1), users.get(1).getLevel());		
 	}
 	
-	@Test
-	public void upgradeLevelsWithMock() {
-		
-	}
-	
 	/**
-	 * 특정 id의 사용자 ugrader시 예외를 발생시킴
+	 * 특정 id의 사용자 ugradeLevel시 TestUserServiceExcetion예외를 발생시킴
 	 *
 	 */
-	class UserServiceForTest extends UserServiceImpl {
+	public class UserServiceForTest extends UserServiceImpl {
 		private String id;
 		
 		public UserServiceForTest(String id) {

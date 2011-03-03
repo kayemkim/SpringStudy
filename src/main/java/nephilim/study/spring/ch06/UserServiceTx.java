@@ -9,7 +9,6 @@ public class UserServiceTx implements UserService{
 	UserService userService;
 	PlatformTransactionManager txManager;
 	
-
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}

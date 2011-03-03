@@ -6,10 +6,21 @@
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="testDataSource" />
 	</bean>
-
-	<bean id="userServiceTx" class="nephilim.study.spring.ch06.UserServiceTx">
-		<property name="transasctionManager" ref="transactionManager"/>		
-		<property name="userService" ref="userServiceImpl"/>
+	
+	<!--  Tx Proxy에다 TimeMeasure를 동시에 생성 -->
+	<bean 	id="userServiceTxAndTimeMeasure" 
+			class="nephilim.study.spring.ch06.m03.TimeMeasureProxyFactoryBean">
+		<property name="target" ref="userServiceTx"/>
+		<property name="serviceInterface" value="nephilim.study.spring.ch06.UserService"/>
+	</bean>
+	
+	<!-- Tx Proxy 생성 -->
+	<bean 	id="userServiceTx" 
+			class="nephilim.study.spring.ch06.m03.TxProxyFactoryBean">
+		<property name="target" ref="userServiceImpl"/>
+		<property name="txManager" ref="transactionManager"/>		
+		<property name="pattern" value="upgradeLevels"/>
+		<property name="serviceInterface" value="nephilim.study.spring.ch06.UserService"/>
 	</bean>
 
 	<bean id="userServiceImpl" class="nephilim.study.spring.ch06.UserServiceImpl">

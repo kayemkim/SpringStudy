@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<!-- Advisor를 전부 찾아내 적용함 -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+		
+	<bean class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="titleDecoAdvice" />
+		<property name="pointcut" ref="pointcut"/>
+	</bean>
+
+	<bean id="titleDecoAdvice" class="nephilim.study.spring.ch06.m05.TitleDecoAdvice" />
+	<bean id="pointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+		<property name="mappedName" value="sayStoredText" />
+	</bean>
+		
+	<bean id="textSpeech" class="nephilim.study.spring.ch06.m05.TextSpeechTarget">
+		<property name="text" value="speeeeech this"/>
+	</bean>
+	
+
+</beans>
