@@ -1,8 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+5<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	http://www.springframework.org/schema/tx
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"">
 	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30"/>
+			<tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 
 	<bean id="txAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">
 		<property name="transactionManager"  ref="txManager"/>
 		<property name="transactionAttributes">
@@ -13,7 +27,8 @@
 			</props>
 		</property>
 	</bean>
-
+ 	-->
+ 	
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="testDataSource"/>
 	</bean>

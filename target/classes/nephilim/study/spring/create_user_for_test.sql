@@ -1,5 +1,4 @@
-
-
+/*
 create tablespace test 
 datafile 'C:\oraclexe\oradata\XE\TEST.DBF' 
 size 100M
@@ -17,8 +16,7 @@ default tablespace test
 temporary tablespace temp
 
 grant connect, resource to test
-
-
+*/
 
 create table users
 (	
