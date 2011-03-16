@@ -8,24 +8,31 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import nephilim.study.spring.ch06.practice.dao.BlogDao;
 import nephilim.study.spring.ch06.practice.model.Blog;
 import nephilim.study.spring.ch06.practice.model.Post;
 import nephilim.study.spring.ch06.practice.service.BlogService;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public class BlogServiceTest {
+public class BlogServiceTxTest1 {
 	
 	@Autowired
-	private BlogService service;
+	private BlogService blogService;
+	
+	@Autowired
+	private BlogService testBlogService;
+	
+	@Autowired
+	private BlogDao blogDao;
 	
 	private List<Blog> blogs;
 	
@@ -64,16 +71,16 @@ public class BlogServiceTest {
 	
 	@Before
 	public void insertBlogs() throws Exception{
-		service.deleteAll();
+		blogService.deleteAll();
 		blogs = createBlogs();
 		for ( Blog blog:blogs) {
-			service.add(blog);
+			blogService.add(blog);
 		}
 	}
 	
 	@Test
 	public void getAllThreeBlogs() {
-		List<Blog> blogs= service.getAll();
+		List<Blog> blogs= blogService.getAll();
 		assertTrue("총 블로그 수는 3건임", 
 				3 == blogs.size());
 		
@@ -82,10 +89,10 @@ public class BlogServiceTest {
 				2 == keyemBlog.getPosts().size() );
 	}
 	
-	
 	@Test(expected = IllegalStateException.class)
 	public void addPost() 
 	throws Exception {
+		
 		Blog newBlog = new Blog();
 		newBlog.setName("new blog");
 		newBlog.setAddress(new URL("http://new.blog.com"));
@@ -108,13 +115,21 @@ public class BlogServiceTest {
 		newBlog.setPosts(posts);
 		
 		try{
-			service.add(newBlog);
+			blogService.add(newBlog);
 		} catch (IllegalStateException e) {
-			List<Blog> blogs = service.getAll();
-			assertTrue("Tx가 적용되지 않아 블로그 사이즈는 기존 보다 1개 많아야 함",
-					blogs.size() == createBlogs().size() + 1); 
+			List<Blog> blogs = blogService.getAll();
+			assertTrue("Tx가 적용되어 블로그 사이즈는 기존과 같아야 함",
+					blogs.size() == createBlogs().size()); 
 			throw e;
 		}
 		
 	}
+
+	
+	@Test
+	@Transactional(readOnly=true)
+	public void readOnlyTest() {
+		
+	}
+	
 }

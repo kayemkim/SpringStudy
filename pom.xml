@@ -72,6 +72,11 @@
 			<type>pom</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>com.springsource.org.aspectj.tools</artifactId>
+		    <version>1.6.8.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>

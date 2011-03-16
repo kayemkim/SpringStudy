@@ -12,20 +12,20 @@ import nephilim.study.spring.ch06.practice.model.Blog;
 import nephilim.study.spring.ch06.practice.model.Post;
 import nephilim.study.spring.ch06.practice.service.BlogService;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public class BlogServiceTest {
+public class AnnotationalBlogServiceTest {
 	
 	@Autowired
-	private BlogService service;
+	private BlogService blogService;
 	
 	private List<Blog> blogs;
 	
@@ -62,30 +62,26 @@ public class BlogServiceTest {
 		return blogs;
 	}
 	
+
+	/**
+	 * 테스트의 전/후 처리 또한 트랜잭션 경계에 포함됨
+	 */
 	@Before
-	public void insertBlogs() throws Exception{
-		service.deleteAll();
-		blogs = createBlogs();
-		for ( Blog blog:blogs) {
-			service.add(blog);
-		}
+	public void deleteAllData() {
+		blogService.deleteAll();
+		
+		List<Blog> currentBlogs = blogService.getAll();
+		assertTrue("블로그 삭제 후 크기는 0이어야함", 
+				currentBlogs.size() == 0);
 	}
 	
 	@Test
-	public void getAllThreeBlogs() {
-		List<Blog> blogs= service.getAll();
-		assertTrue("총 블로그 수는 3건임", 
-				3 == blogs.size());
-		
-		Blog keyemBlog = blogs.get(1);
-		assertTrue("kayem 블로그에는 post가 2건 존재해야함",
-				2 == keyemBlog.getPosts().size() );
-	}
-	
-	
-	@Test(expected = IllegalStateException.class)
+	@Transactional
+	//@Rollback(false)
 	public void addPost() 
 	throws Exception {
+		List<Blog> prevBlogs = blogService.getAll();
+		
 		Blog newBlog = new Blog();
 		newBlog.setName("new blog");
 		newBlog.setAddress(new URL("http://new.blog.com"));
@@ -96,10 +92,7 @@ public class BlogServiceTest {
 		post1.setContent("nephilim is bad");
 		post1.setCreated(new Date());
 		
-		// id가 이미 부여되어 있어
-		// insert 직전 예외발생
 		Post post2 = new Post();
-		post2.setId(1);		
 		post2.setTitle("post02.title");
 		post2.setContent("nephilim is not so bad");
 		post2.setCreated(new Date());
@@ -107,14 +100,16 @@ public class BlogServiceTest {
 		List<Post> posts = Arrays.asList(new Post[]{post1, post2});
 		newBlog.setPosts(posts);
 		
-		try{
-			service.add(newBlog);
-		} catch (IllegalStateException e) {
-			List<Blog> blogs = service.getAll();
-			assertTrue("Tx가 적용되지 않아 블로그 사이즈는 기존 보다 1개 많아야 함",
-					blogs.size() == createBlogs().size() + 1); 
-			throw e;
-		}
+		blogService.add(newBlog);
+		
+		List<Blog> currentBlogs = blogService.getAll();
+		
+		assertTrue("블로그 추가 후 이전 크기보다 1증가해야함", 
+				(prevBlogs.size() + 1) == currentBlogs.size());
 		
 	}
+
+	
+	
+	
 }

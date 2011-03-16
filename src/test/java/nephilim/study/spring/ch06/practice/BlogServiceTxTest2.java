@@ -22,10 +22,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public class BlogServiceTest {
+public class BlogServiceTxTest2 {
 	
 	@Autowired
-	private BlogService service;
+	private BlogService blogService;
+	
+	@Autowired
+	private BlogService testBlogService;
+	
 	
 	private List<Blog> blogs;
 	
@@ -64,16 +68,16 @@ public class BlogServiceTest {
 	
 	@Before
 	public void insertBlogs() throws Exception{
-		service.deleteAll();
+		blogService.deleteAll();
 		blogs = createBlogs();
 		for ( Blog blog:blogs) {
-			service.add(blog);
+			blogService.add(blog);
 		}
 	}
 	
 	@Test
 	public void getAllThreeBlogs() {
-		List<Blog> blogs= service.getAll();
+		List<Blog> blogs= blogService.getAll();
 		assertTrue("총 블로그 수는 3건임", 
 				3 == blogs.size());
 		
@@ -81,7 +85,6 @@ public class BlogServiceTest {
 		assertTrue("kayem 블로그에는 post가 2건 존재해야함",
 				2 == keyemBlog.getPosts().size() );
 	}
-	
 	
 	@Test(expected = IllegalStateException.class)
 	public void addPost() 
@@ -108,13 +111,19 @@ public class BlogServiceTest {
 		newBlog.setPosts(posts);
 		
 		try{
-			service.add(newBlog);
+			blogService.add(newBlog);
 		} catch (IllegalStateException e) {
-			List<Blog> blogs = service.getAll();
-			assertTrue("Tx가 적용되지 않아 블로그 사이즈는 기존 보다 1개 많아야 함",
-					blogs.size() == createBlogs().size() + 1); 
+			List<Blog> blogs = blogService.getAll();
+			assertTrue("Tx가 적용되어 블로그 사이즈는 기존과 같아야 함",
+					blogs.size() == createBlogs().size()); 
 			throw e;
 		}
 		
 	}
+
+	@Test
+	public void readOnlyTest() {
+		testBlogService.getAll();
+	}
+	
 }
