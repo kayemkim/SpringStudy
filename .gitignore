@@ -1,0 +1,10 @@
+lib/*
+target
+*.class
+*.bak
+*~
+.*
+!.gitignore
+
+
+
