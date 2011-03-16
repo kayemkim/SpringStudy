@@ -32,6 +32,11 @@ public class BlogDao {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
+	public int createId() {
+		return jdbcTemplate.queryForInt(
+				"select seq_blog_id.nextval from dual");
+	}
+	
 	public Blog get(int id) {
 		return jdbcTemplate.queryForObject(
 				"select * from blog where id = ?",
@@ -40,14 +45,16 @@ public class BlogDao {
 	}
 	
 	public List<Blog> getAll() {
-		List<Blog> blogs = jdbcTemplate.query("select * from blog order by id", blogRowMapper);
+		List<Blog> blogs = jdbcTemplate.query(
+				"select * from blog order by id", blogRowMapper);
 		return blogs;
 	}
 	
 	public void add(Blog blog) {
 		jdbcTemplate.update(
 				"insert into blog(id, name, email, address) " +
-				"values(seq_blog_id.nextval,?,?,?)",
+				"values(?,?,?,?)",
+				blog.getId(),
 				blog.getName(),
 				blog.getEmail(),
 				blog.getAddress().toString());
@@ -56,7 +63,7 @@ public class BlogDao {
 	public void deleteAll() {
 		jdbcTemplate.update("delete from blog");
 	}
-	
+
 	/*
 	public void update(User user) {
 		jdbcTemplate.update(

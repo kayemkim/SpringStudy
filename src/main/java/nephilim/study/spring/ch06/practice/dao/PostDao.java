@@ -19,8 +19,10 @@ public class PostDao {
 	
 	private RowMapper<Post> postRowMapper = new RowMapper<Post>(){
 
-		public Post mapRow(ResultSet rs, int rowNum) throws SQLException {
+	public Post mapRow(ResultSet rs, int rowNum) 
+	throws SQLException {
 			Post post = new Post();
+			post.setId(rs.getInt("id"));
 			post.setTitle(rs.getString("title"));
 			post.setContent(rs.getString("content"));
 			post.setCreated(rs.getTimestamp("created"));
@@ -48,11 +50,17 @@ public class PostDao {
 		return blogs;
 	}
 	
+	public int createId() {
+		return jdbcTemplate.queryForInt(
+				"select seq_post_id.nextval from dual");
+	}
+	
 	public void add(Blog blog, Post post) {
 		Timestamp created = new Timestamp(post.getCreated().getTime());
 		jdbcTemplate.update(
 				"insert into post(id, blog_id, title, content, created) " +
-				"values(seq_post_id.nextval, ?,?,?,?)",
+				"values(?,?,?,?,?)",
+				post.getId(),
 				blog.getId(),
 				post.getTitle(),
 				post.getContent(),

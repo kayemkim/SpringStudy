@@ -4,8 +4,9 @@ import java.net.URL;
 import java.util.List;
 
 public class Blog {
+	public static int NO_ID = -1;
 	
-	private int id;
+	private int id = NO_ID;
 	private String name;
 	private URL address;
 	private String email;
