@@ -1,8 +1,9 @@
 package nephilim.study.spring.ch06.practice;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import nephilim.study.spring.ch06.practice.model.Blog;
 import nephilim.study.spring.ch06.practice.model.Post;
@@ -10,6 +11,7 @@ import nephilim.study.spring.ch06.practice.service.BlogServiceImpl;
 
 public class AddOnGetMethodBlogService extends BlogServiceImpl {
 	
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
 	public List<Blog> getAll(){
 		System.out.println("UpdateOnGetMethodBlogService.getAll()-Delete");
 		/*
