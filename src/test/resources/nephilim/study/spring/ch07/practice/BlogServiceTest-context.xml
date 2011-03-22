@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="blogService" class="nephilim.study.spring.ch07.practice.service.BlogServiceImpl">
+		<property name="blogDao" ref="blogDao"/>
+		<property name="postDao" ref="postDao"/>
+	</bean>
+	
+	<bean id="blogDao" class="nephilim.study.spring.ch07.practice.dao.BlogDao">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="sqlService" ref="sqlService"/>
+	</bean>
+	
+	<bean id="postDao" class="nephilim.study.spring.ch07.practice.dao.PostDao">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="sqlService" ref="sqlService"/>
+	</bean>
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="username" value="test" />
+		<property name="password" value="test" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE" />
+	</bean>
+
+	<bean id="sqlService" class="nephilim.study.spring.ch07.practice.sqlservice.SimpleSqlService">
+		<property name="sqlMap">
+			<map>
+				<entry 	key="blog.createId" 
+						value="select seq_blog_id.nextval from dual" />
+				<entry 	key="blog.getById" 
+						value="select * from blog where id = ?" />
+				<entry 	key="blog.getAll" 
+						value="select * from blog order by id" />
+				<entry 	key="blog.insert" 
+						value="insert into blog(id, name, email, address) values(?,?,?,?)" />
+				<entry 	key="blog.deleteAll" 
+						value="delete from blog" />
+				
+				<entry 	key="post.createId" 
+						value="select seq_post_id.nextval from dual" />
+				<entry 	key="post.getById" 
+						value="select * from post where id = ?" />
+				<entry 	key="post.getAllInBlog" 
+						value="select * from post where blog_id = ? order by id" />
+				<entry 	key="post.deleteByBlogId" 
+						value="delete from post where blog_id =?" />
+			</map>
+		</property>
+		
+		
+	</bean>
+</beans>
