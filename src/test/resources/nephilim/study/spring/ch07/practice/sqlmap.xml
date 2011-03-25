@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlmap xmlns="http://www.example.com/sqlmap"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:xsi:schemaLocation="http://www.example.com/sqlmap 
+								http://www.example.com/sqlmap/sqlmap.xsd">
+		<sql key="blog.createId">select seq_blog_id.nextval from dual</sql>
+		<sql key="blog.getById">select * from blog where id = ?</sql>
+		<sql key="blog.getAll">select * from blog order by id</sql>
+		<sql key="blog.insert">insert into blog(id, name, email, address) values(?,?,?,?)</sql>
+		<sql key="blog.deleteAll">delete from blog</sql>
+		<sql key="post.createId">select seq_post_id.nextval from dual</sql>
+		<sql key="post.getById">select * from post where id = ?</sql>
+		<sql key="post.getAllInBlog">select * from post where blog_id = ? order by id</sql>
+		<sql key="post.deleteByBlogId">delete from post where blog_id =?</sql>						
+</sqlmap>
